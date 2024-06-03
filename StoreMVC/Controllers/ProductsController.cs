@@ -1,9 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using StoreMVC.Models;
 using StoreMVC.Services;
 
 namespace StoreMVC.Controllers
 {
+    [Authorize]
     public class ProductsController(ApplicationDbContext context, IWebHostEnvironment environment) : Controller
     {
         private readonly ApplicationDbContext context = context;
@@ -11,7 +14,8 @@ namespace StoreMVC.Controllers
 
         public IActionResult Index()
         {
-            var products = context.Products.OrderByDescending(p => p.Id).ToList();
+            //var products = context.Products.OrderByDescending(p => p.Id).ToList();
+            var products = context.Products.FromSqlRaw("EXEC SP_TEST").ToList();
             return View(products);
         }
 
